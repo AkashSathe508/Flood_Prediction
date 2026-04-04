@@ -1,0 +1,154 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-primary: #0f172a;
+  --bg-panel: #1e293b;
+  --accent-blue: #3b82f6;
+  --risk-safe: #22c55e;
+  --risk-mod: #eab308;
+  --risk-high: #f97316;
+  --risk-sev: #ef4444;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-primary);
+  color: #f1f5f9;
+  overflow: hidden;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Map Containers */
+.leaflet-container {
+  background: #0f172a !important;
+  font-family: 'Inter', sans-serif;
+}
+
+.panel-card {
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.glow-text {
+  text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
+}
+
+.live-indicator {
+  position: relative;
+}
+.live-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #22c55e;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: translateY(-50%) scale(1); }
+  50% { opacity: 0.5; transform: translateY(-50%) scale(1.5); }
+  100% { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
+/* React Comparison Slider */
+.comparison-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.comparison-slider img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.comparison-slider .handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: white;
+  z-index: 10;
+  cursor: ew-resize;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+.comparison-slider .handle::after {
+  content: '◂▸';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 50%;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+}
+
+/* Flood Animation */
+path.flood-polygon-animated {
+  transition: fill 1s ease-in-out, fill-opacity 1s ease-in-out, stroke 1s ease-in-out, d 1s ease-in-out;
+}
+
+/* Water Flow Animation */
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -48;
+  }
+}
+path.flow-arrow-animated {
+  animation: dash-flow 2s linear infinite;
+}
+
+/* Evacuation Route Animations */
+@keyframes route-dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+.route-path-animated {
+  animation: route-dash 10s linear infinite;
+}
+
+@keyframes glow-pulse {
+  0% { opacity: 0.15; }
+  50% { opacity: 0.45; }
+  100% { opacity: 0.15; }
+}
+.route-glow-effect {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
