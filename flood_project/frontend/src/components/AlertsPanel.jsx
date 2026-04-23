@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 export default function AlertsPanel({ alerts = [] }) {
     const severityConfig = {
         low: { color: '#22c55e', label: 'LOW', icon: 'ℹ️' },
@@ -6,9 +8,15 @@ export default function AlertsPanel({ alerts = [] }) {
         critical: { color: '#dc2626', label: 'CRIT', icon: '🚨' },
     }
 
+    const [nowMs, setNowMs] = useState(() => Date.now())
+    useEffect(() => {
+        const t = setInterval(() => setNowMs(Date.now()), 60_000)
+        return () => clearInterval(t)
+    }, [])
+
     const formatTime = (ts) => {
         const d = new Date(ts)
-        const diff = Math.floor((Date.now() - d.getTime()) / 60000)
+        const diff = Math.floor((nowMs - d.getTime()) / 60000)
         if (diff < 1) return 'Just now'
         if (diff < 60) return `${diff}m ago`
         return `${Math.floor(diff / 60)}h ago`

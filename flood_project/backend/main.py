@@ -16,6 +16,8 @@ from api.prediction_routes import router as prediction_router
 from api.map_routes import router as map_router
 from api.sensor_routes import router as sensor_router
 from api.weather_routes import router as weather_router
+from api.signals_routes import router as signals_router
+from api.shelter_routes import router as shelter_router
 from services.websocket_manager import manager
 from services.weather_service import fetch_open_meteo
 from services.hydro_service import fetch_river_levels
@@ -130,6 +132,8 @@ app.include_router(prediction_router, prefix="/api/predict", tags=["Prediction"]
 app.include_router(map_router, prefix="/api/map", tags=["Map"])
 app.include_router(sensor_router, prefix="/api/sensors", tags=["Sensors"])
 app.include_router(weather_router, prefix="/api/weather", tags=["Weather"])
+app.include_router(signals_router, prefix="/api/signals", tags=["Emergency Signals"])
+app.include_router(shelter_router, prefix="/api/shelters", tags=["Shelters"])
 
 
 # ─── WebSocket Endpoints ────────────────────────────────────

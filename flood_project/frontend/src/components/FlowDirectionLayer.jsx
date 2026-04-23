@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useMemo } from 'react'
 import { Polyline } from 'react-leaflet'
 import { useRegion } from '../context/RegionContext'
 import * as turf from '@turf/turf'
@@ -34,11 +34,7 @@ function generateFlowPaths(lat, lng) {
 
 export default function FlowDirectionLayer() {
   const { region } = useRegion()
-  const [paths, setPaths] = useState([])
-
-  useEffect(() => {
-    setPaths(generateFlowPaths(region.lat, region.lng))
-  }, [region.lat, region.lng])
+  const paths = useMemo(() => generateFlowPaths(region.lat, region.lng), [region.lat, region.lng])
 
   return (
     <>

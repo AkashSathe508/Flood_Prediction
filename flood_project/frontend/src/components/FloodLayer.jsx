@@ -18,16 +18,15 @@ function getStatusText(score) {
   return 'SAFE'
 }
 
-export default function FloodLayer({ zones, timeOffset = 0 }) {
+export default function FloodLayer() {
   const { region } = useRegion()
   const [realZones, setRealZones] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const timeOffset = 0
 
   // Fetch real water body GeoJSON from backend
   useEffect(() => {
     let cancelled = false
     async function fetchZones() {
-      setLoading(true)
       try {
         const res = await getFloodZones(region.lat, region.lng)
         if (!cancelled && res.data) {
@@ -47,11 +46,10 @@ export default function FloodLayer({ zones, timeOffset = 0 }) {
         console.warn('Flood zones fetch failed, using generated zones', err)
         setRealZones(null)
       }
-      setLoading(false)
     }
     fetchZones()
     return () => { cancelled = true }
-  }, [region.lat, region.lng, timeOffset])
+  }, [region.lat, region.lng])
 
   // Use backend data if available, otherwise fall back to generated zones
   const data = realZones && realZones.features?.length > 0
@@ -69,7 +67,7 @@ export default function FloodLayer({ zones, timeOffset = 0 }) {
   })
 
   const onEachFeature = (feature, layer) => {
-    const { risk_score, zone_name, confidence } = feature.properties
+    const { risk_score, zone_name } = feature.properties
     
     layer.bindPopup(`
       <div style="font-family:Inter,sans-serif; color:#f1f5f9; min-width:180px; background:#1e293b; padding:4px; border-radius:8px;">
@@ -95,7 +93,7 @@ export default function FloodLayer({ zones, timeOffset = 0 }) {
     `, { className: 'dark-popup' })
   }
 
-  return <GeoJSON key={`flood-${region.lat}-${region.lng}-${timeOffset}`} data={data} style={style} onEachFeature={onEachFeature} />
+  return <GeoJSON key={`flood-${region.lat}-${region.lng}`} data={data} style={style} onEachFeature={onEachFeature} />
 }
 
 function _estimateRisk(feature, timeOffset, index) {
@@ -136,7 +134,7 @@ function _getDynamicZones(lat, lng, timeOffset) {
         properties: { risk_score: risk, zone_name: centroid.name, confidence: Math.max(60, 95 - timeOffset) },
         geometry: { type: 'Polygon', coordinates: [smoothedLine.geometry.coordinates] }
       }
-    } catch (e) {
+    } catch {
       const pt = turf.point(centroid.coordinates)
       const circ = turf.circle(pt, 0.5 + (centroid.baseRisk / 100 * 1.5), { units: 'miles' })
       return { type: 'Feature', properties: { risk_score: centroid.baseRisk, zone_name: centroid.name, confidence: 90 }, geometry: circ.geometry }

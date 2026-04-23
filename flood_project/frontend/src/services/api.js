@@ -58,4 +58,44 @@ export const getSensorHistory = (id) =>
 export const ingestSensorData = (data) =>
     api.post('/sensors/ingest', data)
 
+// ─── Emergency Signals (Crowdsourced) ───────────────────────
+export const listEmergencySignals = ({ bbox } = {}) =>
+    api.get('/signals', { params: bbox ? { bbox } : {} })
+
+export const getEmergencySignalsSummary = () =>
+    api.get('/signals/summary')
+
+export const createEmergencySignal = ({ lat, lng, status, signal_id }) =>
+    api.post('/signals', { lat, lng, status, signal_id })
+
+export const updateEmergencySignal = (signal_id, { status }) =>
+    api.patch(`/signals/${signal_id}`, { status })
+
+export const deleteEmergencySignal = (signal_id) =>
+    api.delete(`/signals/${signal_id}`)
+
+// ─── Shelter Endpoints ──────────────────────────────────────
+export const listShelters = ({ bbox } = {}) =>
+    api.get('/shelters', { params: bbox ? { bbox } : {} })
+
+export const getShelterSummary = () =>
+    api.get('/shelters/summary')
+
+export const createShelter = (data) =>
+    api.post('/shelters', data)
+
+export const updateShelter = (shelter_id, data) =>
+    api.patch(`/shelters/${shelter_id}`, data)
+
+export const deleteShelter = (shelter_id) =>
+    api.delete(`/shelters/${shelter_id}`)
+
+export const getNearestShelter = (lat, lng) =>
+    api.get('/shelters/nearest', { params: { lat, lng } })
+
+export const getShelterRoute = (lat, lng, shelter_lat, shelter_lng) =>
+    api.get('/shelters/safe-route', {
+        params: { origin_lat: lat, origin_lng: lng, dest_lat: shelter_lat, dest_lng: shelter_lng }
+    })
+
 export default api

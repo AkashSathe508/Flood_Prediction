@@ -5,6 +5,7 @@ export default function useWebSocket(url = 'ws://localhost:8000/ws/alerts') {
     const [isConnected, setIsConnected] = useState(false)
     const ws = useRef(null)
     const reconnectTimeout = useRef(null)
+    const connectRef = useRef(null)
 
     const connect = useCallback(() => {
         try {
@@ -27,7 +28,7 @@ export default function useWebSocket(url = 'ws://localhost:8000/ws/alerts') {
             ws.current.onclose = () => {
                 setIsConnected(false)
                 console.log('[WS] Disconnected, reconnecting in 5s...')
-                reconnectTimeout.current = setTimeout(connect, 5000)
+                reconnectTimeout.current = setTimeout(() => connectRef.current?.(), 5000)
             }
 
             ws.current.onerror = (err) => {
@@ -36,11 +37,12 @@ export default function useWebSocket(url = 'ws://localhost:8000/ws/alerts') {
             }
         } catch (err) {
             console.error('[WS] Connection failed:', err)
-            reconnectTimeout.current = setTimeout(connect, 5000)
+            reconnectTimeout.current = setTimeout(() => connectRef.current?.(), 5000)
         }
     }, [url])
 
     useEffect(() => {
+        connectRef.current = connect
         connect()
         return () => {
             clearTimeout(reconnectTimeout.current)

@@ -14,7 +14,7 @@ export default function useFloodData(lat = 28.6139, lng = 77.209, refreshInterva
             // Fetch risk score from backend
             const riskRes = await getRiskScore(lat, lng)
             if (riskRes.data) setRiskScore(riskRes.data)
-        } catch (err) {
+        } catch {
             setRiskScore({
                 score: Math.floor(40 + Math.random() * 40),
                 level: ['LOW', 'MEDIUM', 'HIGH'][Math.floor(Math.random() * 3)],
@@ -33,7 +33,7 @@ export default function useFloodData(lat = 28.6139, lng = 77.209, refreshInterva
                 }))
                 setRainfallData(chartData)
             }
-        } catch (err) {
+        } catch {
             // Fallback: generate mock rainfall
             const data = []
             const now = Date.now()
@@ -64,7 +64,7 @@ export default function useFloodData(lat = 28.6139, lng = 77.209, refreshInterva
                 }))
                 setWaterLevelData(chartData)
             }
-        } catch (err) {
+        } catch {
             // Fallback: generate mock water levels
             const data = []
             const now = Date.now()
@@ -87,9 +87,9 @@ export default function useFloodData(lat = 28.6139, lng = 77.209, refreshInterva
     }, [lat, lng])
 
     useEffect(() => {
-        fetchData()
+        Promise.resolve().then(fetchData)
         // Generate initial alerts (will be replaced by alert engine in Step 8)
-        setAlerts(_generateAlerts())
+        queueMicrotask(() => setAlerts(_generateAlerts()))
         
         const interval = setInterval(fetchData, refreshInterval)
         

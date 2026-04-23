@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useCallback } from 'react'
 
 const RegionContext = createContext(null)
@@ -50,4 +51,4 @@ export function useRegion() {
     return ctx
 }
 
-export default RegionContext
+// Intentionally no default export to keep Fast Refresh happy.

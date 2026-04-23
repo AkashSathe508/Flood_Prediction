@@ -10,7 +10,6 @@ const tabs = [
 function generateForecastData() {
     const data = []
     for (let i = 0; i < 48; i++) {
-        const t = new Date(Date.now() + i * 3600000)
         const val = 2.5 + Math.sin(i / 8) * 1.5 + (Math.random() - 0.5) * 0.5
         data.push({
             hour: `+${i}h`,

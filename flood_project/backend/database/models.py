@@ -3,7 +3,7 @@ Database models — SQLAlchemy ORM + PostGIS support.
 Falls back to SQLite for development.
 """
 
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, Float, DateTime, Text, ForeignKey, JSON, Boolean
 from sqlalchemy.orm import relationship, declarative_base
 from datetime import datetime
 
@@ -68,3 +68,31 @@ class Alert(Base):
     lng = Column(Float)
     triggered_at = Column(DateTime, default=datetime.utcnow)
     resolved_at = Column(DateTime, nullable=True)
+
+
+class EmergencySignal(Base):
+    __tablename__ = "emergency_signals"
+
+    # Full private ID (never exposed publicly by list endpoints)
+    signal_id = Column(String(64), primary_key=True, index=True)
+    lat = Column(Float, nullable=False)
+    lng = Column(Float, nullable=False)
+    status = Column(String(20), nullable=False)  # help | stranded | safe
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)
+
+
+class Shelter(Base):
+    __tablename__ = "shelters"
+
+    id = Column(Integer, primary_key=True, index=True)
+    shelter_id = Column(String(64), unique=True, index=True)   # private owner token
+    type = Column(String(30), nullable=False)       # hospital | school | government | community
+    name = Column(String(200), nullable=True)        # required for institutions, null for community
+    lat = Column(Float, nullable=False)
+    lng = Column(Float, nullable=False)
+    capacity = Column(String(20), nullable=False)    # "50" or "1-2", "3-5", "5+"
+    resources = Column(JSON, default=[])             # ["beds","food","medical"] or ["food_water","charging"]
+    is_persistent = Column(Boolean, default=False)   # True for institutions
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)
